@@ -2,7 +2,8 @@ mod buffer;
 mod commands;
 mod status_code;
 
-pub use {status_code::*, buffer::*, commands::*};
+pub use {status_code::*, commands::*};
+use buffer::*;
 use rusb::{Device, DeviceHandle, Context, UsbContext};
 use std::time::Duration;
 
@@ -68,7 +69,7 @@ impl CFRH320U93 {
                 }
             }
         }
-        Err(rusb::Error::Other)
+        Err(rusb::Error::NoDevice)
     }
 
     // returns all readable endpoints for given usb device and descriptor
