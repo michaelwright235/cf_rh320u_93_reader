@@ -80,12 +80,9 @@ impl CFRH320U93 {
                 Ok(c) => c,
                 Err(_) => continue,
             };
-            // println!("{:#?}", config_desc);
             for interface in config_desc.interfaces() {
                 for interface_desc in interface.descriptors() {
-                    // println!("{:#?}", interface_desc);
                     for endpoint_desc in interface_desc.endpoint_descriptors() {
-                        // println!("{:#?}", endpoint_desc);
                         endpoints.push(Endpoint {
                             config: config_desc.number(),
                             iface: interface_desc.interface_number(),
