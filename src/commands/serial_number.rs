@@ -22,13 +22,13 @@ pub fn get_internal_serial_number() -> Result<[u8; 8], ReaderError> {
     Ok(num)
 }
 
-pub fn set_internal_serial_number(serial_number: [u8; 8]) -> Result<(), ReaderError> {
+pub fn set_internal_serial_number(serial_number: &[u8; 8]) -> Result<(), ReaderError> {
     let device = CFRH320U93::init()?;
     let mut buffer = Buffer::new();
     buffer.write(0x09);
     buffer.write(0x82);
     for x in serial_number {
-        buffer.write(x);
+        buffer.write(*x);
     }
 
     device.set_report(buffer.get())?;

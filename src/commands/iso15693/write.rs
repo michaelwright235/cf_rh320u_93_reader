@@ -1,8 +1,8 @@
 use crate::*;
 
-pub fn iso15693_write(flag: AccessFlag, skip: u8, data: &Vec<u8>) -> Result<(), ReaderError> {
+pub fn iso15693_write(flag: AccessFlag, skip: u8, data: &[u8]) -> Result<(), ReaderError> {
 
-    let mut checked_data = data.clone();
+    let mut checked_data = data.to_vec();
 
     if flag != AccessFlag::WithoutUID {
         return Err(StatusCode::NotImplemented.into());

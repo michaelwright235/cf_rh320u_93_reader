@@ -63,7 +63,7 @@ fn get_internal_serial_number() {
 #[test]
 fn set_internal_serial_number() {
     let ser = [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF];
-    reader::set_internal_serial_number(ser).unwrap();
+    reader::set_internal_serial_number(&ser).unwrap();
 }
 
 #[test]
