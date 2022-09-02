@@ -9,13 +9,13 @@ use std::time::Duration;
 
 const VID: u16 = 0xffff;
 const PID: u16 = 0x0035;
+const TIMEOUT: Duration = Duration::from_millis(500);
 
 #[derive(Debug)]
 struct Endpoint {
     config: u8,
     iface: u8,
     setting: u8,
-    address: u8,
 }
 
 struct CFRH320U93 {
@@ -26,9 +26,7 @@ struct CFRH320U93 {
 impl CFRH320U93 {
     fn init() -> Result<Self, ReaderError> {
         let mut context = Context::new().unwrap();
-
         let (mut device, mut handle) = Self::open_device(&mut context, VID, PID)?;
-        
         let mut endpoints = Self::find_readable_endpoints(&mut device)?;
         
         if endpoints.len() == 0 {
@@ -50,7 +48,7 @@ impl CFRH320U93 {
         // claim and configure device
         Self::configure_endpoint(&mut handle, &endpoint)?;
 
-        Ok(Self {handle, timeout: Duration::from_millis(500)} )
+        Ok(Self {handle, timeout: TIMEOUT} )
     }
 
     fn open_device<T: UsbContext>(context: &mut T, vid: u16, pid: u16) -> Result<(Device<T>, DeviceHandle<T>), rusb::Error> {
@@ -83,12 +81,11 @@ impl CFRH320U93 {
             };
             for interface in config_desc.interfaces() {
                 for interface_desc in interface.descriptors() {
-                    for endpoint_desc in interface_desc.endpoint_descriptors() {
+                    for _ in interface_desc.endpoint_descriptors() {
                         endpoints.push(Endpoint {
                             config: config_desc.number(),
                             iface: interface_desc.interface_number(),
                             setting: interface_desc.setting_number(),
-                            address: endpoint_desc.address(),
                         });
                     }
                 }
@@ -127,20 +124,4 @@ impl CFRH320U93 {
         new_len -= 2; // getting rid of the last two bytes which are the checksum and the end byte
         Ok(buf[0..new_len].to_vec())
     }
-
-    fn set_timeout(&mut self, timeout: Duration) {
-        self.timeout = timeout;
-    }
-}
-
-pub fn useful_bytes(buf: &[u8]) -> Vec<u8> {
-    let mut new_len = buf.len();
-    for i in 0..(buf.len()-1) {
-        if buf[buf.len()-1-i] == 0x00 {
-            new_len = buf.len()-1-i;
-        } else {
-            break;
-        }
-    }
-    buf[0..new_len].to_vec()
 }
