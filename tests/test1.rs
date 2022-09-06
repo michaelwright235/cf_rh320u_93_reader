@@ -57,7 +57,7 @@ fn red_led() {
 
 #[test]
 fn get_internal_serial_number() {
-    println!("{:#X?}", reader::get_internal_serial_number().unwrap() );
+    println!("{:#X?}", reader::internal_serial_number().unwrap() );
 }
 
 #[test]
@@ -68,7 +68,7 @@ fn set_internal_serial_number() {
 
 #[test]
 fn get_version_number() {
-    let result = reader::get_version_number().unwrap();
+    let result = reader::version_number().unwrap();
     println!("{:#X?}", String::from_utf8(result.to_vec()).unwrap() );
 }
 
@@ -79,9 +79,9 @@ fn set_speed() {
 
 #[test]
 fn device_info() {
-    println!("Manufacturer: {}", reader::get_manufacturer().unwrap());
-    println!("Product String: {}", reader::get_product_string().unwrap());
-    println!("Serial Number: {}", reader::get_serial_number().unwrap());
+    println!("Manufacturer: {}", reader::manufacturer().unwrap());
+    println!("Product String: {}", reader::product_string().unwrap());
+    println!("Serial Number: {}", reader::serial_number().unwrap());
 }
 
 #[test]

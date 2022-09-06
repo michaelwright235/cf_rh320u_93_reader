@@ -1,6 +1,7 @@
 use crate::*;
 
-pub fn get_internal_serial_number() -> Result<[u8; 8], ReaderError> {
+/// Requests the reader's internal serial number. 
+pub fn internal_serial_number() -> Result<[u8; 8], ReaderError> {
     let device = CFRH320U93::init()?;
     let mut buffer = Buffer::new();
     buffer.write(0x01);
@@ -22,6 +23,7 @@ pub fn get_internal_serial_number() -> Result<[u8; 8], ReaderError> {
     Ok(num)
 }
 
+/// Sets the reader's internal serial number. 
 pub fn set_internal_serial_number(serial_number: &[u8; 8]) -> Result<(), ReaderError> {
     let device = CFRH320U93::init()?;
     let mut buffer = Buffer::new();
@@ -42,7 +44,8 @@ pub fn set_internal_serial_number(serial_number: &[u8; 8]) -> Result<(), ReaderE
     Ok(())
 }
 
-pub fn get_version_number() -> Result<[u8; 12], ReaderError> {
+/// Requests the reader's version number. 
+pub fn version_number() -> Result<[u8; 12], ReaderError> {
     let device = CFRH320U93::init()?;
     let mut buffer = Buffer::new();
     buffer.write(0x01);

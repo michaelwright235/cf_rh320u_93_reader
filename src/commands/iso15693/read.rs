@@ -1,5 +1,7 @@
 use crate::*;
 
+/// Reads `number_of_blocks` blocks (1 block = 4 bytes) from card's data
+/// starting from the `skip` block. 
 pub fn iso15693_read(flag: AccessFlag, skip: u8, number_of_blocks: u8) -> Result<Vec<u8>, ReaderError> {
     let device = CFRH320U93::init()?;
     let mut buffer = Buffer::new();

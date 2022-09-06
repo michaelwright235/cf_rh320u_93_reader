@@ -1,6 +1,7 @@
 use crate::*;
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+/// Speed variants of the reader.
+#[derive(Debug, Copy, Clone, Eq, PartialEq, PartialOrd, Ord)]
 #[repr(u8)]
 pub enum Speed {
     S9600 = 0x00,
@@ -9,6 +10,9 @@ pub enum Speed {
     S57600 = 0x03,
     S115200 = 0x04
 }
+
+/// Sets the connection speed of the reader. It's unknown if it actually
+/// changes USB speed or is it meant to be used for serial connections only.
 pub fn set_speed(speed: Speed) ->  Result<(), ReaderError> {
     let device = CFRH320U93::init()?;
     let mut buffer = Buffer::new();

@@ -1,5 +1,6 @@
 use crate::*;
 
+/// Turns the reader's buzzer on `freq` times for `duration`.
 pub fn control_buzzer(freq: u8, duration: u8) -> Result<(), ReaderError> {
     let device = CFRH320U93::init()?;
     let mut buffer = Buffer::new();

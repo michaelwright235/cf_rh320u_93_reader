@@ -1,9 +1,15 @@
 use std::{error::Error, fmt::Display};
 
+/// ReaderError enum contains two types of possible errors:
+/// UsbError and CommandError.
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum ReaderError {
+    /// UsbError is returned if there was some kind of connection problem.
     UsbError(rusb::Error),
-    CommandError(StatusCode)
+    /// CommandError is returned if a reader couldn't proccess given command in some way.
+    CommandError(StatusCode),
+    /// This command is not implemented yet.
+    NotImplemented
 }
 
 impl Display for ReaderError {
@@ -11,6 +17,7 @@ impl Display for ReaderError {
         match self {
             ReaderError::UsbError(e) => f.write_str(e.to_string().as_str()),
             ReaderError::CommandError(e) => f.write_str(e.to_string().as_str()),
+            ReaderError::NotImplemented => f.write_str("Not implemented yet")
         }
     }
 }
@@ -29,6 +36,7 @@ impl From<StatusCode> for ReaderError {
 
 impl Error for ReaderError {}
 
+/// Status codes that a reader can throw.
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum StatusCode {
     Ok,
@@ -49,7 +57,6 @@ pub enum StatusCode {
     LockBlockFailure,
     WriteFailure,
     UnknownCode(u8),
-    NotImplemented
 }
 
 impl Display for StatusCode {
@@ -80,7 +87,6 @@ impl Display for StatusCode {
             StatusCode::BlockIsLocked => "Specified block is locked",
             StatusCode::LockBlockFailure => "Couldn't lock specified block",
             StatusCode::WriteFailure => "Failed to write data",
-            StatusCode::NotImplemented => "Not implemented yet",
             _ => "",
         })
     }
@@ -134,7 +140,6 @@ impl From<StatusCode> for u8 {
             StatusCode::LockBlockFailure => 0x95,
             StatusCode::WriteFailure => 0x96,
             StatusCode::UnknownCode(byte) => byte,
-            StatusCode::NotImplemented => 0x00
         }
     }
 }

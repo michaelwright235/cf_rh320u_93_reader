@@ -1,6 +1,7 @@
 use crate::*;
 
-pub fn get_device_languages() -> Result<Vec<rusb::Language>, ReaderError> {
+/// Reads the languages supported by the device's string descriptors.
+pub fn device_languages() -> Result<Vec<rusb::Language>, ReaderError> {
     let device = CFRH320U93::init()?;
     let result = device.handle.read_languages(device.timeout);
     match result {
@@ -9,8 +10,9 @@ pub fn get_device_languages() -> Result<Vec<rusb::Language>, ReaderError> {
     }
 }
 
-pub fn get_manufacturer() -> Result<String, ReaderError> {
-    let lang = get_device_languages()?[0];
+/// Reads the device's manufacturer string descriptor.
+pub fn manufacturer() -> Result<String, ReaderError> {
+    let lang = device_languages()?[0];
     let device = CFRH320U93::init()?;
     let result = device.handle
     .read_manufacturer_string(
@@ -23,11 +25,12 @@ pub fn get_manufacturer() -> Result<String, ReaderError> {
     }
 }
 
-pub fn get_product_string() -> Result<String, ReaderError> {
-    let lang = get_device_languages()?[0];
+/// Reads the device's product string descriptor.
+pub fn product_string() -> Result<String, ReaderError> {
+    let lang = device_languages()?[0];
     let device = CFRH320U93::init()?;
     let result = device.handle
-    .read_manufacturer_string(
+    .read_product_string(
         lang, 
         &device.handle.device().device_descriptor()?, 
         device.timeout);
@@ -37,8 +40,10 @@ pub fn get_product_string() -> Result<String, ReaderError> {
     }
 }
 
-pub fn get_serial_number() -> Result<String, ReaderError> {
-    let lang = get_device_languages()?[0];
+/// Reads the device's serial number string descriptor.
+/// Don't confuse it with its internal serial number.
+pub fn serial_number() -> Result<String, ReaderError> {
+    let lang = device_languages()?[0];
     let device = CFRH320U93::init()?;
     let result = device.handle
     .read_serial_number_string(

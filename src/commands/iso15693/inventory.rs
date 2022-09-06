@@ -1,5 +1,10 @@
 use crate::*;
 
+/// This function requests available cards' ids and
+/// returns a vector of them.
+/// 
+/// If something went wrong, `ReaderError` enum is returned.
+/// If there's no cards nearby `ReaderError(StatusCode::NoCard)` is returned.
 pub fn iso15693_inventory() -> Result<Vec<[u8; 8]>, ReaderError> {
     let device = CFRH320U93::init()?;
     let mut buffer = Buffer::new();

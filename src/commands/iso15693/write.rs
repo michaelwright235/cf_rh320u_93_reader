@@ -1,11 +1,15 @@
 use crate::*;
 
+/// Writes `data` to a card starting from `skip` byte.
+/// Only `AccessFlag::WithoutUID` is implemented for now.
+/// 
+/// **Warning:** if there's more than one card available,
+/// it's unknown to which one the data will be written to.
 pub fn iso15693_write(flag: AccessFlag, skip: u8, data: &[u8]) -> Result<(), ReaderError> {
-
     let mut checked_data = data.to_vec();
 
     if flag != AccessFlag::WithoutUID {
-        return Err(StatusCode::NotImplemented.into());
+        return Err(ReaderError::NotImplemented);
     }
 
     // The data is written in blocks of 4 bytes.
