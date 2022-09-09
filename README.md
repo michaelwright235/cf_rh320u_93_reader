@@ -1,5 +1,7 @@
 # cf\_rh320u\_93\_reader
 
+[![Current Crates.io Version](https://img.shields.io/crates/v/cf_rh320u_93_reader.svg)](https://crates.io/crates/cf_rh320u_93_reader)
+
 Rust library for interaction with Chafon CF-RH320U-93 USB card readers. It's an open source implementation of the official library, which can be found on their website. 
 
 ## Features
