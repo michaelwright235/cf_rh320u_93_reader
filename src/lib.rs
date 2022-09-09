@@ -22,7 +22,9 @@ struct Endpoint {
 /// Chafon CF-RH320U-93 (ISO 15693) USB card reader.
 pub struct CFRH320U93 {
     handle: DeviceHandle<Context>,
-    timeout: Duration
+    timeout: Duration,
+    endpoint: Endpoint,
+    has_kernel_driver: bool
 }
 
 impl CFRH320U93 {
@@ -41,17 +43,20 @@ impl CFRH320U93 {
         if cfg!(windows) {
             endpoint.iface = 1;
         }
+        
+        let has_kernel_driver;
         match handle.kernel_driver_active(endpoint.iface) {
             Ok(true) => {
                 handle.detach_kernel_driver(endpoint.iface)?;
+                has_kernel_driver = true;
             }
-            _ => (),
+            _ => has_kernel_driver = false,
         };
     
         // claim and configure device
         Self::configure_endpoint(&mut handle, &endpoint)?;
 
-        Ok(Self {handle, timeout: TIMEOUT} )
+        Ok(Self {handle, timeout: TIMEOUT, endpoint, has_kernel_driver} )
     }
 
     /// Sets timeout, which blocks the function up to the specified amount of time.
@@ -133,5 +138,14 @@ impl CFRH320U93 {
         }
         new_len -= 2; // getting rid of the last two bytes which are the checksum and the end byte
         Ok(buf[0..new_len].to_vec())
+    }
+}
+
+impl Drop for CFRH320U93 {
+    fn drop(&mut self) {
+        let _ = self.handle.release_interface(self.endpoint.iface);
+        if self.has_kernel_driver {
+            let _ = self.handle.attach_kernel_driver(self.endpoint.iface);
+        }
     }
 }
