@@ -11,9 +11,9 @@ pub enum Speed {
     S115200 = 0x04
 }
 
-/// Sets the connection speed of the reader. It's unknown if it actually
-/// changes USB speed or is it meant to be used for serial connections only.
 impl CFRH320U93 {
+    /// Sets the connection speed of the reader. It's unknown if it actually
+    /// changes USB speed or is it meant to be used for serial connections only.
     pub fn set_speed(&self, speed: Speed) ->  Result<(), ReaderError> {
         let mut buffer = Buffer::new();
         buffer.write(0x02);

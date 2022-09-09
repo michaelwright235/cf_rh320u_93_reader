@@ -191,7 +191,6 @@ fn erase_card() {
 #[test]
 fn stay_quiet() {
     let uid = [0x68, 0xE, 0x4E, 0x38, 0x8, 0x1, 0x4, 0xE0];
-
     CFRH320U93::open().unwrap().iso15693_stay_quiet(AccessFlag::WithoutUID, &uid).unwrap();
 }
 

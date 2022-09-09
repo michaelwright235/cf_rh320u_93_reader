@@ -18,12 +18,15 @@ struct Endpoint {
     setting: u8,
 }
 
+/// The main interface for interaction with
+/// Chafon CF-RH320U-93 (ISO 15693) USB card reader.
 pub struct CFRH320U93 {
     handle: DeviceHandle<Context>,
     timeout: Duration
 }
 
 impl CFRH320U93 {
+    /// Opens a connection with the reader.
     pub fn open() -> Result<Self, ReaderError> {
         let mut context = Context::new().unwrap();
         let (mut device, mut handle) = Self::open_device(&mut context, VID, PID)?;
@@ -51,6 +54,9 @@ impl CFRH320U93 {
         Ok(Self {handle, timeout: TIMEOUT} )
     }
 
+    /// Sets timeout, which blocks the function up to the specified amount of time.
+    /// 
+    /// Look at libusb documentation for extra details.
     pub fn set_timeout(&mut self, timeout: Duration) {
         self.timeout = timeout;
     }
