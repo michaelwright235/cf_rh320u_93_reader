@@ -13,11 +13,13 @@ The main goal is to support all ISO 15693 related commands in the future.
 
 ## Usage
 
-All commands are performed by calling a single function inside this crate.
+First you need to open a device connection via `open` method of `CFRH320U93` struct.
+Then you can call the desired method.
 
 ```rust
 use cf_rh320u_93_reader::*;
-let inventory = iso15693_inventory().unwrap();
+let device = CFRH320U93::open()?;
+let inventory = device.iso15693_inventory()?;
 for card in inventory {
     println!("{:?}", card);
 }
