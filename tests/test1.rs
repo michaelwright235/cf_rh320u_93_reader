@@ -1,8 +1,8 @@
 use std::time::Duration;
-use cf_rh320u_93_reader as reader;
+use cf_rh320u_93_reader::*;
 
 #[allow(dead_code)]
-fn print_result(status_code: reader::StatusCode) {
+fn print_result(status_code: StatusCode) {
     print!("status code = {:?}", status_code);
     let code: u8 = status_code.into();
     println!(" = {:#X}", code);
@@ -31,62 +31,62 @@ fn print_vec<T: std::fmt::UpperHex>(vec: &Vec<T>) {
 
 #[test]
 fn buzzer() {
-    reader::control_buzzer(0x1,0x05).unwrap();
+    CFRH320U93::open().unwrap().control_buzzer(0x1,0x05).unwrap();
 }
 
 #[test]
 fn green_led() {
-    reader::green_led().unwrap();
+    CFRH320U93::open().unwrap().green_led().unwrap();
 }
 
 #[test]
 fn change_colors() {
-    reader::red_led().unwrap();
+    CFRH320U93::open().unwrap().red_led().unwrap();
     loop {
-        reader::green_led().unwrap();
+        CFRH320U93::open().unwrap().green_led().unwrap();
         std::thread::sleep(Duration::from_millis(2000));
-        reader::red_led().unwrap();
+        CFRH320U93::open().unwrap().red_led().unwrap();
         std::thread::sleep(Duration::from_millis(2000));
     }
 }
 
 #[test]
 fn red_led() {
-    reader::red_led().unwrap();
+    CFRH320U93::open().unwrap().red_led().unwrap();
 }
 
 #[test]
 fn get_internal_serial_number() {
-    println!("{:#X?}", reader::internal_serial_number().unwrap() );
+    println!("{:#X?}", CFRH320U93::open().unwrap().internal_serial_number().unwrap() );
 }
 
 #[test]
 fn set_internal_serial_number() {
     let ser = [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF];
-    reader::set_internal_serial_number(&ser).unwrap();
+    CFRH320U93::open().unwrap().set_internal_serial_number(&ser).unwrap();
 }
 
 #[test]
 fn get_version_number() {
-    let result = reader::version_number().unwrap();
+    let result = CFRH320U93::open().unwrap().version_number().unwrap();
     println!("{:#X?}", String::from_utf8(result.to_vec()).unwrap() );
 }
 
 #[test]
 fn set_speed() {
-    reader::set_speed(reader::Speed::S115200).unwrap();
+    CFRH320U93::open().unwrap().set_speed(Speed::S115200).unwrap();
 }
 
 #[test]
 fn device_info() {
-    println!("Manufacturer: {}", reader::manufacturer().unwrap());
-    println!("Product String: {}", reader::product_string().unwrap());
-    println!("Serial Number: {}", reader::serial_number().unwrap());
+    println!("Manufacturer: {}", CFRH320U93::open().unwrap().manufacturer().unwrap());
+    println!("Product String: {}", CFRH320U93::open().unwrap().product_string().unwrap());
+    println!("Serial Number: {}", CFRH320U93::open().unwrap().serial_number().unwrap());
 }
 
 #[test]
 fn iso15693_inventory() {
-    let result = reader::iso15693_inventory().unwrap();
+    let result = CFRH320U93::open().unwrap().iso15693_inventory().unwrap();
     for card in result {
         print_vec(&card.to_vec());
     }
@@ -94,8 +94,8 @@ fn iso15693_inventory() {
 
 #[test]
 fn iso15693_read() {
-    let result = reader::iso15693_read(
-        reader::AccessFlag::WithoutUID,
+    let result = CFRH320U93::open().unwrap().iso15693_read(
+        AccessFlag::WithoutUID,
         0x00,
         0x0a
     ).unwrap();
@@ -111,8 +111,8 @@ fn iso15693_write() {
                             0x00, 0x00, 0x00, 0x87,
                             0x93, 0x52, 0x55, 0x32,
                             0x39, 0x33];
-        reader::iso15693_write(
-        reader::AccessFlag::WithoutUID,
+        CFRH320U93::open().unwrap().iso15693_write(
+        AccessFlag::WithoutUID,
         0x00,
         &array.to_vec()
     ).unwrap();
@@ -129,8 +129,8 @@ fn test_write() {
                             0x39, 0x33];
     
     // Card data before erase
-    let result = reader::iso15693_read(
-        reader::AccessFlag::WithoutUID,
+    let result = CFRH320U93::open().unwrap().iso15693_read(
+        AccessFlag::WithoutUID,
         0x00,
         0x0a
     ).unwrap();
@@ -143,8 +143,8 @@ fn test_write() {
     let mut erasor = vec![];
     for _ in 0..u {erasor.push(0x00)}
 
-    reader::iso15693_write(
-        reader::AccessFlag::WithoutUID,
+    CFRH320U93::open().unwrap().iso15693_write(
+        AccessFlag::WithoutUID,
         0x00,
         &erasor
     ).unwrap();
@@ -152,16 +152,16 @@ fn test_write() {
     print_vec(&result);
 
     // Writing
-    reader::iso15693_write(
-        reader::AccessFlag::WithoutUID,
+    CFRH320U93::open().unwrap().iso15693_write(
+        AccessFlag::WithoutUID,
         0x00,
         &array.to_vec()
     ).unwrap();
     println!("Data is successfully written");
 
     //Checking
-    let result = reader::iso15693_read(
-        reader::AccessFlag::WithoutUID,
+    let result = CFRH320U93::open().unwrap().iso15693_read(
+        AccessFlag::WithoutUID,
         0x00,
         0x0a
     ).unwrap();
@@ -171,8 +171,8 @@ fn test_write() {
 
 #[test]
 fn erase_card() {
-    let result = reader::iso15693_read(
-        reader::AccessFlag::WithoutUID,
+    let result = CFRH320U93::open().unwrap().iso15693_read(
+        AccessFlag::WithoutUID,
         0x00,
         0x10
     ).unwrap();
@@ -180,8 +180,8 @@ fn erase_card() {
     let mut erasor = vec![];
     for _ in 0..u {erasor.push(0x00)}
 
-    reader::iso15693_write(
-        reader::AccessFlag::WithoutUID,
+    CFRH320U93::open().unwrap().iso15693_write(
+        AccessFlag::WithoutUID,
         0x00,
         &erasor
     ).unwrap();
@@ -192,12 +192,12 @@ fn erase_card() {
 fn stay_quiet() {
     let uid = [0x68, 0xE, 0x4E, 0x38, 0x8, 0x1, 0x4, 0xE0];
 
-    reader::iso15693_stay_quiet(reader::AccessFlag::WithoutUID, &uid).unwrap();
+    CFRH320U93::open().unwrap().iso15693_stay_quiet(AccessFlag::WithoutUID, &uid).unwrap();
 }
 
 #[test]
 fn select() {
     //let uid = [0x68, 0xE, 0x4E, 0x38, 0x8, 0x1, 0x4, 0xE0];
     let uid2 = [0x3, 0xE8, 0xA4, 0x93, 0x50, 0x1, 0x4, 0xE0];
-    reader::iso15693_select(reader::AccessFlag::WithUID, &uid2).unwrap();
+    CFRH320U93::open().unwrap().iso15693_select(AccessFlag::WithUID, &uid2).unwrap();
 }

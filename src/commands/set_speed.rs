@@ -13,14 +13,15 @@ pub enum Speed {
 
 /// Sets the connection speed of the reader. It's unknown if it actually
 /// changes USB speed or is it meant to be used for serial connections only.
-pub fn set_speed(speed: Speed) ->  Result<(), ReaderError> {
-    let device = CFRH320U93::init()?;
-    let mut buffer = Buffer::new();
-    buffer.write(0x02);
-    buffer.write(0x81);
-    buffer.write(speed as u8);
+impl CFRH320U93 {
+    pub fn set_speed(&self, speed: Speed) ->  Result<(), ReaderError> {
+        let mut buffer = Buffer::new();
+        buffer.write(0x02);
+        buffer.write(0x81);
+        buffer.write(speed as u8);
 
-    device.set_report(buffer.get())?;
+        self.set_report(buffer.get())?;
 
-    Ok(())
+        Ok(())
+    }
 }

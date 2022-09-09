@@ -1,70 +1,69 @@
 use crate::*;
 
-/// Requests the reader's internal serial number. 
-pub fn internal_serial_number() -> Result<[u8; 8], ReaderError> {
-    let device = CFRH320U93::init()?;
-    let mut buffer = Buffer::new();
-    buffer.write(0x01);
-    buffer.write(0x83);
+impl CFRH320U93 {
+    /// Requests the reader's internal serial number. 
+    pub fn internal_serial_number(&self) -> Result<[u8; 8], ReaderError> {
+        let mut buffer = Buffer::new();
+        buffer.write(0x01);
+        buffer.write(0x83);
 
-    device.set_report(buffer.get())?;
+        self.set_report(buffer.get())?;
 
-    let result = device.get_report()?;
-    let mut num = [0; 8];
+        let result = self.get_report()?;
+        let mut num = [0; 8];
 
-    if result.len() < 21 {
-        return Err(StatusCode::InvalidData.into()); // todo: return actual error
-    }
-    let mut i = 0;
-    for x in &result[13..21] {
-        num[i] = *x;
-        i+=1;
-    }
-    Ok(num)
-}
-
-/// Sets the reader's internal serial number. 
-pub fn set_internal_serial_number(serial_number: &[u8; 8]) -> Result<(), ReaderError> {
-    let device = CFRH320U93::init()?;
-    let mut buffer = Buffer::new();
-    buffer.write(0x09);
-    buffer.write(0x82);
-    for x in serial_number {
-        buffer.write(*x);
+        if result.len() < 21 {
+            return Err(StatusCode::InvalidData.into()); // todo: return actual error
+        }
+        let mut i = 0;
+        for x in &result[13..21] {
+            num[i] = *x;
+            i+=1;
+        }
+        Ok(num)
     }
 
-    device.set_report(buffer.get())?;
+    /// Sets the reader's internal serial number. 
+    pub fn set_internal_serial_number(&self, serial_number: &[u8; 8]) -> Result<(), ReaderError> {
+        let mut buffer = Buffer::new();
+        buffer.write(0x09);
+        buffer.write(0x82);
+        for x in serial_number {
+            buffer.write(*x);
+        }
 
-    let result = device.get_report()?;
+        self.set_report(buffer.get())?;
 
-    if StatusCode::from(result[12]) != StatusCode::Ok {
-        return Err(StatusCode::from(result[12]).into());
+        let result = self.get_report()?;
+
+        if StatusCode::from(result[12]) != StatusCode::Ok {
+            return Err(StatusCode::from(result[12]).into());
+        }
+
+        Ok(())
     }
 
-    Ok(())
-}
+    /// Requests the reader's version number. 
+    pub fn version_number(&self) -> Result<[u8; 12], ReaderError> {
+        let mut buffer = Buffer::new();
+        buffer.write(0x01);
+        buffer.write(0x86);
 
-/// Requests the reader's version number. 
-pub fn version_number() -> Result<[u8; 12], ReaderError> {
-    let device = CFRH320U93::init()?;
-    let mut buffer = Buffer::new();
-    buffer.write(0x01);
-    buffer.write(0x86);
+        self.set_report(buffer.get())?;
 
-    device.set_report(buffer.get())?;
+        let result = self.get_report()?;
 
-    let result = device.get_report()?;
+        if result.len() < 24 {
+            return Err(StatusCode::InvalidData.into()); // todo: return actual error
+        }
 
-    if result.len() < 24 {
-        return Err(StatusCode::InvalidData.into()); // todo: return actual error
+        let mut num = [0; 12];
+        let mut i = 0;
+        for x in &result[12..24] { // todo: determine how the end is defined
+            num[i] = *x;
+            i+=1;
+        }
+
+        Ok(num)
     }
-
-    let mut num = [0; 12];
-    let mut i = 0;
-    for x in &result[12..24] { // todo: determine how the end is defined
-        num[i] = *x;
-        i+=1;
-    }
-
-    Ok(num)
 }

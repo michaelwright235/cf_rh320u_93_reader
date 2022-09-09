@@ -18,13 +18,13 @@ struct Endpoint {
     setting: u8,
 }
 
-struct CFRH320U93 {
+pub struct CFRH320U93 {
     handle: DeviceHandle<Context>,
-    timeout: Duration // todo: make timeout editable
+    timeout: Duration
 }
 
 impl CFRH320U93 {
-    fn init() -> Result<Self, ReaderError> {
+    pub fn open() -> Result<Self, ReaderError> {
         let mut context = Context::new().unwrap();
         let (mut device, mut handle) = Self::open_device(&mut context, VID, PID)?;
         let mut endpoints = Self::find_readable_endpoints(&mut device)?;
@@ -49,6 +49,10 @@ impl CFRH320U93 {
         Self::configure_endpoint(&mut handle, &endpoint)?;
 
         Ok(Self {handle, timeout: TIMEOUT} )
+    }
+
+    pub fn set_timeout(&mut self, timeout: Duration) {
+        self.timeout = timeout;
     }
 
     fn open_device<T: UsbContext>(context: &mut T, vid: u16, pid: u16) -> Result<(Device<T>, DeviceHandle<T>), rusb::Error> {
