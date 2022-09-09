@@ -6,7 +6,7 @@ repository = "https://github.com/michaelwright235/cf_rh320u_93_reader/"
 categories = ["hardware-support"]
 keywords = ["usb", "hid"]
 license = "MIT"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2021"
 
 [dependencies]
