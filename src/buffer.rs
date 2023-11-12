@@ -16,7 +16,7 @@ impl Buffer {
     pub fn get(&mut self) -> &Vec<u8> {
         let mut finalize_byte = self.buf[10];
         for i in 11..(self.buf.len()) {
-            finalize_byte = finalize_byte ^ self.buf[i];
+            finalize_byte ^= self.buf[i];
         }
         self.write(finalize_byte);
         self.write(0xbb);

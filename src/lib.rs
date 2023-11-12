@@ -34,7 +34,7 @@ impl CFRH320U93 {
         let (mut device, mut handle) = Self::open_device(&mut context, VID, PID)?;
         let mut endpoints = Self::find_readable_endpoints(&mut device)?;
         
-        if endpoints.len() == 0 {
+        if endpoints.is_empty() {
             return Err(rusb::Error::NoDevice.into());
         }
         let mut endpoint = endpoints.remove(0);
@@ -44,13 +44,13 @@ impl CFRH320U93 {
             endpoint.iface = 1;
         }
         
-        let has_kernel_driver;
+        let has_kernel_driver =
         match handle.kernel_driver_active(endpoint.iface) {
             Ok(true) => {
                 handle.detach_kernel_driver(endpoint.iface)?;
-                has_kernel_driver = true;
+                true
             }
-            _ => has_kernel_driver = false,
+            _ => false
         };
     
         // claim and configure device

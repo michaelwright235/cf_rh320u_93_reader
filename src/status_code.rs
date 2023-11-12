@@ -61,12 +61,9 @@ pub enum StatusCode {
 
 impl Display for StatusCode {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            StatusCode::UnknownCode(c) => {
-                let un = String::from("Received unknown status code: ") + format!("{:#X}", c).as_str();
-                return f.write_str(un.as_str())
-            },
-            _ => ()
+        if let StatusCode::UnknownCode(c) = self {
+            let un = String::from("Received unknown status code: ") + format!("{:#X}", c).as_str();
+            return f.write_str(un.as_str());
         }
 
         f.write_str(match self {
