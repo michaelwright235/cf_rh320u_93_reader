@@ -9,7 +9,7 @@ pub enum ReaderError {
     /// CommandError is returned if a reader couldn't proccess given command in some way.
     CommandError(StatusCode),
     /// This command is not implemented yet.
-    NotImplemented
+    NotImplemented,
 }
 
 impl Display for ReaderError {
@@ -17,7 +17,7 @@ impl Display for ReaderError {
         match self {
             ReaderError::UsbError(e) => f.write_str(e.to_string().as_str()),
             ReaderError::CommandError(e) => f.write_str(e.to_string().as_str()),
-            ReaderError::NotImplemented => f.write_str("Not implemented yet")
+            ReaderError::NotImplemented => f.write_str("Not implemented yet"),
         }
     }
 }
@@ -111,7 +111,7 @@ impl From<u8> for StatusCode {
             0x94 => Self::BlockIsLocked,
             0x95 => Self::LockBlockFailure,
             0x96 => Self::WriteFailure,
-            _ => Self::UnknownCode(byte)
+            _ => Self::UnknownCode(byte),
         }
     }
 }

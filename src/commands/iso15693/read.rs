@@ -2,8 +2,13 @@ use crate::*;
 
 impl CFRH320U93 {
     /// Reads `number_of_blocks` blocks (1 block = 4 bytes) from card's data
-    /// starting from the `skip` block. 
-    pub fn iso15693_read(&self, flag: AccessFlag, skip: u8, number_of_blocks: u8) -> Result<Vec<u8>, ReaderError> {
+    /// starting from the `skip` block.
+    pub fn iso15693_read(
+        &self,
+        flag: AccessFlag,
+        skip: u8,
+        number_of_blocks: u8,
+    ) -> Result<Vec<u8>, ReaderError> {
         let mut buffer = Buffer::new();
         buffer.write(0x04);
         buffer.write(0x11);
@@ -20,7 +25,7 @@ impl CFRH320U93 {
         let result = self.get_report()?;
         let found = result[11]; // 0x00 - card is present, 0x01 - it's not
         if found == 0x01 {
-            return Err(StatusCode::from(result[12]).into())
+            return Err(StatusCode::from(result[12]).into());
         }
         let data = result[13..result.len()].to_vec();
 

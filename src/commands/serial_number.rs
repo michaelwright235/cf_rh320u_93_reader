@@ -1,7 +1,7 @@
 use crate::*;
 
 impl CFRH320U93 {
-    /// Requests the reader's internal serial number. 
+    /// Requests the reader's internal serial number.
     pub fn internal_serial_number(&self) -> Result<[u8; 8], ReaderError> {
         let mut buffer = Buffer::new();
         buffer.write(0x01);
@@ -18,12 +18,12 @@ impl CFRH320U93 {
         let mut i = 0;
         for x in &result[13..21] {
             num[i] = *x;
-            i+=1;
+            i += 1;
         }
         Ok(num)
     }
 
-    /// Sets the reader's internal serial number. 
+    /// Sets the reader's internal serial number.
     pub fn set_internal_serial_number(&self, serial_number: &[u8; 8]) -> Result<(), ReaderError> {
         let mut buffer = Buffer::new();
         buffer.write(0x09);
@@ -43,7 +43,7 @@ impl CFRH320U93 {
         Ok(())
     }
 
-    /// Requests the reader's version number. 
+    /// Requests the reader's version number.
     pub fn version_number(&self) -> Result<[u8; 12], ReaderError> {
         let mut buffer = Buffer::new();
         buffer.write(0x01);
@@ -59,9 +59,10 @@ impl CFRH320U93 {
 
         let mut num = [0; 12];
         let mut i = 0;
-        for x in &result[12..24] { // todo: determine how the end is defined
+        for x in &result[12..24] {
+            // todo: determine how the end is defined
             num[i] = *x;
-            i+=1;
+            i += 1;
         }
 
         Ok(num)

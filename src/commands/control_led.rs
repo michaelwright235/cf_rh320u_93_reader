@@ -22,11 +22,11 @@ impl CFRH320U93 {
 
     /// Turns the reader's led green.
     pub fn green_led(&self) -> Result<(), ReaderError> {
-        self.control_led(0xff,0xff)
+        self.control_led(0xff, 0xff)
     }
 
     /// Turns the reader's led red.
     pub fn red_led(&self) -> Result<(), ReaderError> {
-        self.control_led(0x00,0x00)
+        self.control_led(0x00, 0x00)
     }
 }

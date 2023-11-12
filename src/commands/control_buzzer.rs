@@ -9,7 +9,7 @@ impl CFRH320U93 {
         buffer.write(duration);
         buffer.write(freq);
 
-        self.set_report(buffer.get())?; 
+        self.set_report(buffer.get())?;
 
         let read_buf = self.get_report()?;
 

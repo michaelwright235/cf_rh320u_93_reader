@@ -7,7 +7,9 @@ impl CFRH320U93 {
         buffer.write(0x15);
         buffer.write(flag as u8);
 
-        for u in uid {buffer.write(*u);}
+        for u in uid {
+            buffer.write(*u);
+        }
 
         self.set_report(buffer.get())?;
 
@@ -15,7 +17,7 @@ impl CFRH320U93 {
 
         let found = result[11]; // 0x00 - card is present, 0x01 - it's not
         if found == 0x01 {
-            return Err(StatusCode::from(result[12]).into())
+            return Err(StatusCode::from(result[12]).into());
         }
         if StatusCode::from(result[12]) != StatusCode::Ok {
             return Err(StatusCode::from(result[12]).into());

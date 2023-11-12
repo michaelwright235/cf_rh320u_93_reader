@@ -3,7 +3,7 @@ use crate::*;
 impl CFRH320U93 {
     /// This function requests available cards' ids and
     /// returns a vector of them.
-    /// 
+    ///
     /// If something went wrong, `ReaderError` enum is returned.
     /// If there's no cards nearby `ReaderError(StatusCode::NoCard)` is returned.
     pub fn iso15693_inventory(&self) -> Result<Vec<[u8; 8]>, ReaderError> {
@@ -19,7 +19,7 @@ impl CFRH320U93 {
         let result = self.get_report()?;
         let found = result[11]; // 0x00 - card is present, 0x01 - it's not
         if found == 0x01 {
-            return Err(StatusCode::from(result[12]).into())
+            return Err(StatusCode::from(result[12]).into());
         }
 
         let number_of_cards = result[12];
